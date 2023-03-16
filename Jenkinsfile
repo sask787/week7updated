@@ -49,19 +49,43 @@ podTemplate(yaml: '''
       }
     }
 
-    stage('Build Java Image') {
+try
+{
+  stage('Build Java Image') {
      container('kaniko') {
         stage('Build a gradle project') {
-          sh '''
+
+          if (env.BRANCH_NAME == 'master'){
+              sh '''
           echo 'FROM openjdk:8-jre' > Dockerfile
           echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
           echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
           mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
           /kaniko/executor --context `pwd` --destination sasidharank7/hello-kaniko:1.0
           '''
+          }
+          else if (env.BRANCH_NAME == 'feature'){
+          sh '''
+          echo 'FROM openjdk:8-jre' > Dockerfile
+          echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
+          echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
+          mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
+          /kaniko/executor --context `pwd` --destination sasidharank7/hello-kaniko:0.1
+          '''
+          }
+          else{
+            echo 'Container Creation Process is N/A for Playground branch'
+          }
+         
         }
       }
     }
+}
+ catch (Exception E) 
+	 {
+		echo 'Error Building Java Image'
+	 }
+    
 
   }
 }
