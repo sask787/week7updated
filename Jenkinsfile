@@ -46,6 +46,32 @@ podTemplate(yaml: '''
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
           '''
         }
+         stage("Unit test") {
+              if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'master') {
+                    sh "./gradlew test"
+               }
+               else {
+                echo "Unit test is skipped or N/A for Branch : ${env.BRANCH_NAME}"
+               }
+          }
+          stage("Code coverage") {
+             
+               if (env.BRANCH_NAME == 'master') {
+                    sh "./gradlew jacocoTestReport"
+                    sh "./gradlew jacocoTestCoverageVerification"
+               }
+                else {
+                echo "Code Coverage is skipped or N/A for Branch : ${env.BRANCH_NAME}"
+               }
+          }
+          stage("Static code analysis") {
+               if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'master') {
+                    sh "./gradlew checkstyleMain"
+               }
+               else {
+                echo "Static Code Analysis is skipped or N/A for Branch : ${env.BRANCH_NAME}"
+               }
+          }
       }
     }
 
