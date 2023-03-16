@@ -46,7 +46,7 @@ podTemplate(yaml: '''
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
           '''
         }
-         stage("Unit test") {
+         stage('Unit Test') {
               if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'master') {
                     sh "./gradlew test"
                }
