@@ -47,7 +47,7 @@ podTemplate(yaml: '''
           '''
         }
          stage('Unit Test') {
-              if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'master') {
+              if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'main') {
                     sh "./gradlew test"
                }
                else {
@@ -56,7 +56,7 @@ podTemplate(yaml: '''
           }
           stage("Code coverage") {
              
-               if (env.BRANCH_NAME == 'master') {
+               if (env.BRANCH_NAME == 'main') {
                     sh "./gradlew jacocoTestReport"
                     sh "./gradlew jacocoTestCoverageVerification"
                }
@@ -65,7 +65,7 @@ podTemplate(yaml: '''
                }
           }
           stage("Static code analysis") {
-               if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'master') {
+               if (env.BRANCH_NAME == 'feature' || env.BRANCH_NAME == 'main') {
                     sh "./gradlew checkstyleMain"
                }
                else {
@@ -81,7 +81,7 @@ try
      container('kaniko') {
         stage('Build a gradle project') {
 
-          if (env.BRANCH_NAME == 'master'){
+          if (env.BRANCH_NAME == 'main'){
               sh '''
           echo 'FROM openjdk:8-jre' > Dockerfile
           echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
@@ -103,7 +103,7 @@ try
             echo 'Container Creation Process is N/A for Playground branch'
           }
          
-        }
+        } 
       }
     }
 }
